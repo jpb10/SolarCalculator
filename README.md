@@ -1,0 +1,3 @@
+# SolarCalculator
+
+Library for Arduino
