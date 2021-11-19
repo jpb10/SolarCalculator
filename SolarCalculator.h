@@ -1,3 +1,16 @@
+//======================================================================================================================
+// SolarCalculator Library for Arduino
+//
+// SolarCalculator is based on the NOAA Solar Calculator:
+// https://www.esrl.noaa.gov/gmd/grad/solcalc/
+//
+// This library provides functions to calculate the Sun's position in the sky, the times of sunrise, sunset, twilight
+// and solar noon for any location on earth, as well as the equation of time and more.
+//
+// Most formulae are taken from the textbook Astronomical Algorithms by Jean Meeus or the NOAA Solar Calculator
+// source code. Other sources are cited in the comments.
+//======================================================================================================================
+
 #ifndef SOLARCALCULATOR_H
 #define SOLARCALCULATOR_H
 
@@ -8,11 +21,14 @@ const double CIVIL_DAWNDUSK_STD_ALTITUDE = -6.0;
 const double NAUTICAL_DAWNDUSK_STD_ALTITUDE = -12.0;
 const double ASTRONOMICAL_DAWNDUSK_STD_ALTITUDE = -18.0;
 
-//
+//======================================================================================================================
 // Intermediate calculations
-// Time T is measured in Julian Centuries (36525 ephemeris days from the epoch J2000.0)
 //
+// Time T is measured in Julian Centuries (36525 ephemeris days from the epoch J2000.0)
+//======================================================================================================================
 
+double wrapTo360(double angle);
+double wrapTo180(double angle);
 double between0And1(double n);
 double interpolateCoordinates(double n, double y1, double y2, double y3);
 double fractionalDay(int hour, int minute, int second);
@@ -30,36 +46,34 @@ double calcSunApparentLong(double T);
 double calcMeanObliquityOfEcliptic(double T);
 double calcNutationLongitude(double T);
 double calcNutationObliquity(double T);
-double calcObliquityCorrection1(double T);
-double calcObliquityCorrection2(double T);
+double calcObliquityCorrectionV1(double T);
+double calcObliquityCorrectionV2(double T);
 double calcSunRtAscension(double T);
 double calcSunDeclination(double T);
 double calcNutationRtAscension(double T);
 double calcMeanSiderealTime(double JD);
 double calcApparentSiderealTime(double JD);
 double calcSiderealTimeInstant(double GAST, double m);
-double calcSolarElevation(double ha, double decl, double lat);
 double calcSolarAzimuth(double ha, double decl, double lat);
+double calcSolarElevation(double ha, double decl, double lat);
 double calcRefractionCorr(double elev);
-double equationOfTime1(double T);
-double equationOfTime2(double T);
-double equationOfTime3(double T);
+double equationOfTimeSmart(double T);
+double equationOfTimeHughes(double T);
+double equationOfTimeMeeus(double T);
 double calcDeltaT(double year, double month);
 
-//
+//======================================================================================================================
 // Solar calculator
-// Results are passed by reference
+//
 // All calculations assume time inputs in Coordinated Universal Time (UTC)
 //
+// Results are passed by reference
+//======================================================================================================================
 
-// Calculate the Equation of (Ephemeris) Time, in minutes of time
-//
-// sel = 1: Equation by W.M. Smart, Textbook on Spherical Astronomy (1971) (default)
-// sel = 2: Equation by D.W. Hughes, The equation of time - NASA/ADS (1989)
-// sel = 3: As defined by Jean Meeus, Astronomical Algorithms (1991)
+// Calculate the equation of (ephemeris) time, in minutes of time
 //
 void calcEquationOfTime(int year, int month, int day, int hour, int minute, int second,
-                        double &E, int sel = 1);
+                        double &E);
 
 // Calculate the Sun's right ascension and declination, in degrees
 //
@@ -77,17 +91,13 @@ void calcHorizontalCoordinates(int year, int month, int day, int hour, int minut
 void calcSunRadiusVector(int year, int month, int day, int hour, int minute, int second,
                          double &radius_vector);
 
-// Calculate the Sun's times of rising, transit and setting, in fraction of days
-//
-// local = false:   Results are between 0 and 1, Universal Time.
-// local = true:    Results can be less than 0 or greater than 1, Universal Time. (default)
-//                  *** Use the default option if you intend to convert your results to local standard time. ***
+// Calculate the Sun's times of rising, transit and setting, in hours
 //
 void calcSunriseSunset(int year, int month, int day, double latitude, double longitude,
                        double &transit, double &sunrise, double &sunset,
-                       double altitude = SUNRISESET_STD_ALTITUDE, bool local = true);
+                       double altitude = SUNRISESET_STD_ALTITUDE);
 
-// Calculate the times of civil, nautical and astronomical dawn and dusk, in fraction of days
+// Calculate the times of civil, nautical and astronomical dawn and dusk, in hours
 //
 void calcCivilDawnDusk(int year, int month, int day, double latitude, double longitude,
                        double &transit, double &dawn, double &dusk);
