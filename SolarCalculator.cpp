@@ -124,25 +124,15 @@ double calcSunRadVector(double T)
     return 1.000001018 * (1 - e * e) / (1 + e * cos(v));  // in AUs
 }
 
-double calcSunApparentLong(double T)
-{
-    double O = calcSunTrueLong(T);
-    double omega = radians(125.04 - 1934.136 * T);
-    return O - 0.00569 - 0.00478 * sin(omega);  // in degrees
-}
-
-double calcMeanObliquityOfEcliptic(double T)
-{
-    return 23 + (26 + (21.448 - T * (46.815 + T * (0.00059 - 0.001813 * T))) / 60) / 60;  // in degrees
-}
-
-// See Astronomical Algorithms 2nd edition errata
+/*
+// These expressions require double-precision arithmetic
+//
 double calcNutationLongitude(double T)
 {
     double omega = radians(125.04452 - 1934.136261 * T);
     double L1 = radians(280.4665 + 36000.7698 * T);
     double L2 = radians(218.3165 + 481267.8813 * T);
-    return -17.2 * sin(omega) - 1.32 * sin(2 * L1) - 0.23 * sin(2 * L2) + 0.21 * sin(2 * omega);  // in arcseconds
+    return (-17.2 * sin(omega) - 1.32 * sin(2 * L1) - 0.23 * sin(2 * L2) + 0.21 * sin(2 * omega)) / 3600;  // in degrees
 }
 
 double calcNutationObliquity(double T)
@@ -150,60 +140,76 @@ double calcNutationObliquity(double T)
     double omega = radians(125.04452 - 1934.136261 * T);
     double L1 = radians(280.4665 + 36000.7698 * T);
     double L2 = radians(218.3165 + 481267.8813 * T);
-    return 9.20 * cos(omega) + 0.57 * cos(2 * L1) + 0.10 * cos(2 * L2) - 0.09 * cos(omega);  // in arcseconds
+    return (9.20 * cos(omega) + 0.57 * cos(2 * L1) + 0.10 * cos(2 * L2) - 0.09 * cos(2 * omega)) / 3600;  // in degrees
 }
+*/
 
-double calcObliquityCorrectionV1(double T)
+double calcNutationLongitude(double T)
 {
-    double epsilon0 = calcMeanObliquityOfEcliptic(T);
     double omega = radians(125.04 - 1934.136 * T);
-    return epsilon0 + 0.00256 * cos(omega);  // in degrees
+    return -0.00478 * sin(omega);  // in degrees
 }
 
-double calcObliquityCorrectionV2(double T)
+double calcNutationObliquity(double T)
+{
+    double omega = radians(125.04 - 1934.136 * T);
+    return 0.00256 * cos(omega);  // in degrees
+}
+
+double calcSunApparentLong(double T)
+{
+    return calcSunTrueLong(T) - 0.00569 + calcNutationLongitude(T);  // in degrees
+}
+
+double calcMeanObliquityOfEcliptic(double T)
+{
+    return 23 + (26 + (21.448 - T * (46.815 + T * (0.00059 - 0.001813 * T))) / 60) / 60;  // in degrees
+}
+
+double calcObliquityCorrection(double T)
 {
     double epsilon0 = calcMeanObliquityOfEcliptic(T);
     double delta_epsilon = calcNutationObliquity(T);
-    return epsilon0 + delta_epsilon / 3600;  // in degrees
+    return epsilon0 + delta_epsilon;  // in degrees
 }
 
 double calcSunRtAscension(double T)
 {
-    double epsilon = radians(calcObliquityCorrectionV1(T));
+    double epsilon = radians(calcObliquityCorrection(T));
     double lambda = radians(calcSunApparentLong(T));
     return degrees(atan2(cos(epsilon) * sin(lambda), cos(lambda)));  // in degrees
 }
 
 double calcSunDeclination(double T)
 {
-    double epsilon = radians(calcObliquityCorrectionV1(T));
-    double lambda1 = radians(calcSunApparentLong(T));
-    return degrees(asin(sin(epsilon) * sin(lambda1)));  // in degrees
+    double epsilon = radians(calcObliquityCorrection(T));
+    double lambda = radians(calcSunApparentLong(T));
+    return degrees(asin(sin(epsilon) * sin(lambda)));  // in degrees
 }
 
-// We neglect the very small variation of delta_psi during time ΔT
 double calcNutationRtAscension(double T)
 {
     double delta_psi = calcNutationLongitude(T);
-    double epsilon = radians(calcObliquityCorrectionV2(T));
-    return delta_psi * cos(epsilon) / 3600;  // in degrees
+    double epsilon = radians(calcObliquityCorrection(T));
+    return delta_psi * cos(epsilon);  // in degrees
 }
 
 // Valid only at 0h UT, Greenwich (JD ending in .5)
-double calcMeanSiderealTime(double JD)
+double calcGrMeanSiderealTime(double JD)
 {
     double T = calcJulianCent(JD);
     return wrapTo360(100.46061837 + T * (36000.770053608 + T * (0.000387933 - T / 38710000)));  // in degrees
 }
 
-double calcApparentSiderealTime(double JD)
+// We neglect the very small variation of Δψ during time ΔT
+double calcGrApparentSiderealTime(double JD)
 {
     double T = calcJulianCent(JD);
-    return calcMeanSiderealTime(JD) + calcNutationRtAscension(T);  // in degrees
+    return calcGrMeanSiderealTime(JD) + calcNutationRtAscension(T);  // in degrees
 }
 
-// We neglect the small variation of delta_psi during time m
-double calcSiderealTimeInstant(double GAST, double m)
+// We neglect the small variation of Δψ during time m
+double calcGrSiderealTimeInstant(double GAST, double m)
 {
     return wrapTo360(GAST + 360.985647 * m);  // in degrees
 }
@@ -211,48 +217,35 @@ double calcSiderealTimeInstant(double GAST, double m)
 /*
 // Alternate implementation
 //
-// Valid only at 0h UT, Greenwich (JD ending in .5)
-double calcMeanSiderealTime(double JD)
+double calcGrMeanSiderealTimeInstant(double JD, double m)
 {
-    double T = calcJulianCent(JD);
-    return wrapTo360(100.46061837 + T * (36000.770053608 + T * (0.000387933 - T / 38710000)));  // in degrees
-}
-
-double calcMeanSiderealTimeInstant(double JD, double m)
-{
-    double theta0 = calcMeanSiderealTime(JD);
+    double theta0 = calcGrMeanSiderealTime(JD);
     return wrapTo360(theta0 + 360.985647 * m);  // in degrees
 }
 
-double calcApparentSiderealTime(double JD)
-{
-    double T = calcJulianCent(JD);
-    return calcMeanSiderealTime(JD) + calcNutationRtAscension(T);  // in degrees
-}
-
-double calcApparentSiderealTimeInstant(double JD, double m)
+double calcGrApparentSiderealTimeInstant(double JD, double m)
 {
     double T = calcJulianCentSplit(JD, m);
-    return calcMeanSiderealTimeInstant(JD, m) + calcNutationRtAscension(T);  // in degrees
+    return calcGrMeanSiderealTimeInstant(JD, m) + calcNutationRtAscension(T);  // in degrees
 }
 */
 
-double calcSolarAzimuth(double ha, double decl, double lat)
+double calcSunAzimuth(double HA, double decl, double lat)
 {
-    return degrees(atan2(sin(radians(ha)), cos(radians(ha)) * sin(radians(lat)) -
+    return degrees(atan2(sin(radians(HA)), cos(radians(HA)) * sin(radians(lat)) -
                    tan(radians(decl)) * cos(radians(lat))));  // in degrees
 }
 
-double calcSolarElevation(double ha, double decl, double lat)
+double calcSunElevation(double HA, double decl, double lat)
 {
     return degrees(asin(sin(radians(lat)) * sin(radians(decl)) +
-                   cos(radians(lat)) * cos(radians(decl)) * cos(radians(ha))));  // in degrees
+                   cos(radians(lat)) * cos(radians(decl)) * cos(radians(HA))));  // in degrees
 }
 
 // Approximate atmospheric refraction correction
 // National Oceanic and Atmospheric Administration (NOAA)
 //
-double calcRefractionCorr(double elev)
+double calcRefraction(double elev)
 {
     if (elev > 85.0)
         return 0.0;
@@ -276,7 +269,7 @@ double equationOfTimeSmart(double T)
     double e = calcEccentricityEarthOrbit(T);
     double L = radians(calcGeomMeanLongSun(T));
     double M = radians(calcGeomMeanAnomalySun(T));
-    double epsilon = radians(calcObliquityCorrectionV2(T));
+    double epsilon = radians(calcObliquityCorrection(T));
     double y = tan(epsilon / 2) * tan(epsilon / 2);
     return degrees(y * sin(2 * L) - 2 * e * sin(M) + 4 * e * y * sin(M) * cos(2 * L) - 0.5 * y * y * sin(4 * L) -
                    1.25 * e * e * sin(2 * M));  // in degrees
@@ -290,7 +283,7 @@ double equationOfTimeHughes(double T)
     double e = calcEccentricityEarthOrbit(T);
     double L = radians(calcGeomMeanLongSun(T));
     double M = radians(calcGeomMeanAnomalySun(T));
-    double epsilon = radians(calcObliquityCorrectionV2(T));
+    double epsilon = radians(calcObliquityCorrection(T));
     double y = tan(epsilon / 2) * tan(epsilon / 2);
     return degrees(0.00000447 * T + 0.00000149 * T * T - 2 * e * sin(M) - 1.25 * e * e * sin(2 * M) +
                    y * sin(2 * L) - 0.5 * y * y * sin (4 * L) + 4 * e * y * sin(M) * cos(2 * L) +
@@ -303,13 +296,10 @@ double equationOfTimeHughes(double T)
 //
 double equationOfTimeMeeus(double T)
 {
-    double alpha = wrapTo360(calcSunRtAscension(T));
-    double delta_psi = calcNutationLongitude(T);
-    double epsilon = radians(calcObliquityCorrectionV2(T));
     double t = T / 10;
     double L0 = wrapTo360(280.4664567 + t * (360007.6982779 + t * (0.03032028 + t * (1 / 49931.0 - t * (1 / 15300.0 +
                           t / 2000000)))));
-    return L0 - 0.0057183 - alpha + delta_psi * cos(epsilon) / 3600;  // in degrees
+    return wrapTo180(L0 - 0.0057183 - calcSunRtAscension(T) - calcNutationRtAscension(T));  // in degrees
 }
 
 // Polynomial Expressions for Delta T (ΔT) by Fred Espenak
@@ -444,16 +434,16 @@ void calcHorizontalCoordinates(int year, int month, int day, int hour, int minut
     double delta = calcSunDeclination(T);
 
     // Find apparent sidereal time at Greenwich
-    double theta0 = calcApparentSiderealTime(JD);
-    theta0 = calcSiderealTimeInstant(theta0, m);
+    double theta0 = calcGrApparentSiderealTime(JD);
+    theta0 = calcGrSiderealTimeInstant(theta0, m);
 
     // Find local angle hour
     double H = theta0 + longitude - alpha;
 
     // Write results, in degrees
-    azimuth = 180 + calcSolarAzimuth(H, delta, latitude);
-    elevation = calcSolarElevation(H, delta, latitude);
-    elevation += calcRefractionCorr(elevation);
+    azimuth = 180 + calcSunAzimuth(H, delta, latitude);
+    elevation = calcSunElevation(H, delta, latitude);
+    elevation += calcRefraction(elevation);
 }
 
 // Calculate the Sun's radius vector (distance), in AUs
@@ -492,7 +482,7 @@ void calcSunriseSunset(int year, int month, int day, double latitude, double lon
     double delta3 = calcSunDeclination(T3);
 
     // Find apparent sidereal time at Greenwich
-    double theta0 = calcApparentSiderealTime(JD);
+    double theta0 = calcGrApparentSiderealTime(JD);
 
     // Local angle hour at sunrise or sunset (NaN if body is circumpolar)
     double H0 = degrees(acos((sin(radians(h0)) - sin(radians(latitude)) * sin(radians(delta2))) /
@@ -512,25 +502,25 @@ void calcSunriseSunset(int year, int month, int day, double latitude, double lon
     {
         double n0 = m0 + delta_t / 86400;
         double transit_alpha = interpolateCoordinates(n0, alpha1, alpha2, alpha3);
-        double theta00 = calcSiderealTimeInstant(theta0, m0);
-        double transit_ha = wrapTo180(theta00 + longitude - transit_alpha);
+        double transit_theta0 = calcGrSiderealTimeInstant(theta0, m0);
+        double transit_ha = wrapTo180(transit_theta0 + longitude - transit_alpha);
         double transit_corr = -transit_ha / 360;
 
         double n1 = m1 + delta_t / 86400;
         double rise_alpha = interpolateCoordinates(n1, alpha1, alpha2, alpha3);
         double rise_delta = interpolateCoordinates(n1, delta1, delta2, delta3);
-        double theta01 = calcSiderealTimeInstant(theta0, m1);
-        double rise_ha = theta01 + longitude - rise_alpha;
-        double rise_elev = calcSolarElevation(rise_ha, rise_delta, latitude);
+        double rise_theta0 = calcGrSiderealTimeInstant(theta0, m1);
+        double rise_ha = rise_theta0 + longitude - rise_alpha;
+        double rise_elev = calcSunElevation(rise_ha, rise_delta, latitude);
         double rise_corr = (rise_elev - h0) /
                            (360.0 * cos(radians(rise_delta)) * cos(radians(latitude)) * sin(radians(rise_ha)));
 
         double n2 = m2 + delta_t / 86400;
         double set_alpha = interpolateCoordinates(n2, alpha1, alpha2, alpha3);
         double set_delta = interpolateCoordinates(n2, delta1, delta2, delta3);
-        double theta02 = calcSiderealTimeInstant(theta0, m2);
-        double set_ha = theta02 + longitude - set_alpha;
-        double set_elev = calcSolarElevation(set_ha, set_delta, latitude);
+        double set_theta0 = calcGrSiderealTimeInstant(theta0, m2);
+        double set_ha = set_theta0 + longitude - set_alpha;
+        double set_elev = calcSunElevation(set_ha, set_delta, latitude);
         double set_corr = (set_elev - h0) /
                           (360.0 * cos(radians(set_delta)) * cos(radians(latitude)) * sin(radians(set_ha)));
 
