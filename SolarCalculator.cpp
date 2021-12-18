@@ -412,7 +412,10 @@ void calcEquatorialCoordinates(int year, int month, int day, int hour, int minut
     // Find Julian day
     double JD = calcJulianDay(year, month, day);
     double m = fractionalDay(hour, minute, second);
-    double T = calcJulianCentSplit(JD, m);
+
+    // Convert to Dynamical Time (TD)
+    double delta_t = calcDeltaT(year, month);
+    double T = calcJulianCentSplit(JD, m + delta_t / 86400);
 
     // Write results, in degrees
     rt_ascension = calcSunRtAscension(T);
@@ -427,7 +430,10 @@ void calcHorizontalCoordinates(int year, int month, int day, int hour, int minut
     // Find Julian day
     double JD = calcJulianDay(year, month, day);
     double m = fractionalDay(hour, minute, second);
-    double T = calcJulianCentSplit(JD, m);
+
+    // Convert to Dynamical Time (TD)
+    double delta_t = calcDeltaT(year, month);
+    double T = calcJulianCentSplit(JD, m + delta_t / 86400);
 
     // Find solar coordinates
     double alpha = calcSunRtAscension(T);
@@ -453,7 +459,10 @@ void calcSunRadiusVector(int year, int month, int day, int hour, int minute, int
     // Find Julian day
     double JD = calcJulianDay(year, month, day);
     double m = fractionalDay(hour, minute, second);
-    double T = calcJulianCentSplit(JD, m);
+
+    // Convert to Dynamical Time (TD)
+    double delta_t = calcDeltaT(year, month);
+    double T = calcJulianCentSplit(JD, m + delta_t / 86400);
 
     // Write result, in AUs
     radius_vector = calcSunRadVector(T);
