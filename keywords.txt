@@ -37,6 +37,7 @@ equationOfTimeSmart	KEYWORD2
 equationOfTimeHughes	KEYWORD2
 equationOfTimeMeeus	KEYWORD2
 calcDeltaT	KEYWORD2
+calcDeltaTPoly	KEYWORD2
 calcEquationOfTime	KEYWORD2
 calcEquatorialCoordinates	KEYWORD2
 calcHorizontalCoordinates	KEYWORD2

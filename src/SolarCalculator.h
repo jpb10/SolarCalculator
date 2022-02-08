@@ -1,7 +1,7 @@
 //======================================================================================================================
 // SolarCalculator Library for Arduino
 //
-// SolarCalculator is based on the NOAA Solar Calculator: https://www.esrl.noaa.gov/gmd/grad/solcalc/
+// SolarCalculator is based on the NOAA Solar Calculator: https://gml.noaa.gov/grad/solcalc/
 //
 // This library provides functions to calculate the Sun's position in the sky, the times of sunrise, sunset, twilight
 // and solar noon for any location on earth, as well as the equation of time and more.
@@ -13,7 +13,7 @@
 #ifndef SOLARCALCULATOR_H
 #define SOLARCALCULATOR_H
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 const double SUNRISESET_STD_ALTITUDE = -0.8333;
 const double CIVIL_DAWNDUSK_STD_ALTITUDE = -6.0;
