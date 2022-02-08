@@ -1,8 +1,7 @@
 //======================================================================================================================
 // SolarCalculator Library for Arduino
 //
-// SolarCalculator is based on the NOAA Solar Calculator:
-// https://www.esrl.noaa.gov/gmd/grad/solcalc/
+// SolarCalculator is based on the NOAA Solar Calculator: https://www.esrl.noaa.gov/gmd/grad/solcalc/
 //
 // This library provides functions to calculate the Sun's position in the sky, the times of sunrise, sunset, twilight
 // and solar noon for any location on earth, as well as the equation of time and more.
@@ -302,10 +301,33 @@ double equationOfTimeMeeus(double T)
     return wrapTo180(L0 - 0.0057183 - calcSunRtAscension(T) - calcNutationRtAscension(T));  // in degrees
 }
 
-// Polynomial Expressions for Delta T (ΔT) by Fred Espenak
-// Valid from year -1999 to +3000
+// Simple polynomial expressions for delta T (ΔT)
+// Long-term parabolas fitted to historical data, very approximate before 1900
 //
 double calcDeltaT(double year, double month)
+{
+    double y = year + (month - 0.5) / 12;
+    if (y > 1997)
+    {
+        double t = y - 2015;
+        return 67.62 + t * (0.3645 + 0.0039755 * t);
+    }
+    else if (y > 948)
+    {
+        double u = (y - 2000) / 100;
+        return 64.69 + u * (80.59 + 23.604 * u);
+    }
+    else  // y < 948
+    {
+        double u = (y - 2000) / 100;
+        return 2177 + u * (497 + 44.1 * u);  // in seconds of time
+    }
+}
+
+// Polynomial expressions for delta T (ΔT) by Fred Espenak
+// Valid from year -1999 to +3000
+//
+double calcDeltaTPoly(double year, double month)
 {
     double y = year + (month - 0.5) / 12;
     if (y > 2015)
