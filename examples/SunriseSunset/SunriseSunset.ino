@@ -1,85 +1,76 @@
 //======================================================================================================================
-// SolarCalculator Library for Arduino example sketch: SunriseSunset
+// SolarCalculator Library for Arduino example sketch: SunriseSunset.ino
 //  
-// Calculate the times of sunrise, sunset, solar noon and twilight for a given date and location.
+// Calculate the times of sunrise, sunset and solar noon for a given date and location.
 //
-// Tested with Arduino IDE 1.8.13 and Arduino Uno/Nano
+// Tested with Arduino IDE 1.8.19 and Arduino Uno
 //======================================================================================================================
 
 #include <SolarCalculator.h>
 
 // Date
-int year = 2021;
-int month = 11;
-int day = 22;
+const int year = 2022;
+const int month = 2;
+const int day = 11;
 
 // Location
-double latitude = 45.55;
-double longitude = -73.633;
-int time_zone = -5;
-
-double sunrise;  // Sunrise, in hours (UTC)      
-double transit;  // Solar noon, in hours (UTC)
-double sunset;   // Sunset, in hours (UTC)
-double dawn;     // Civil dawn, in hours (UTC)
-double dusk;     // Civil dusk, in hours (UTC)
+const double latitude = 45.55;
+const double longitude = -73.633;
+const int time_zone = -5;
 
 void setup() 
 {
   Serial.begin(9600);
 
+  double sunrise;  // Sunrise, in hours (UTC)      
+  double transit;  // Solar noon, in hours (UTC)
+  double sunset;   // Sunset, in hours (UTC)
+
   // Calculate the times of sunrise, transit and sunset (UTC)
   calcSunriseSunset(year, month, day, latitude, longitude, transit, sunrise, sunset);
-
-  // Calculate the times of civil dawn and dusk (UTC)
-  calcCivilDawnDusk(year, month, day, latitude, longitude, transit, dawn, dusk);
-
-  // To local standard time
-  sunrise += time_zone;
-  transit += time_zone;
-  sunset += time_zone;
-  dawn += time_zone;
-  dusk += time_zone; 
 
   // Print result
   Serial.print("Date: ");
   Serial.print(year);
-  Serial.print("-");
-  Serial.print(month);
-  Serial.print("-");
-  Serial.println(day);
-  
+  Serial.print('-');
+  printDigits(month);
+  Serial.print('-');
+  printDigits(day);
+  Serial.println();
+
   Serial.print("Latitude: ");
   Serial.print(latitude, 3);
   Serial.print(" Longitude: ");
   Serial.println(longitude, 3);
   Serial.print("UTC offset: ");
-  Serial.println(time_zone);
+  Serial.print(time_zone);
+  Serial.println();
   Serial.println("--"); 
 
   Serial.print("Sunrise: ");
-  printTime24h(sunrise);
+  printSunTime24h(toLocal(sunrise));
   Serial.print("Transit: ");
-  printTime24h(transit);
+  printSunTime24h(toLocal(transit));
   Serial.print("Sunset:  ");
-  printTime24h(sunset);
-  Serial.print("Civil dawn: ");
-  printTime24h(dawn);
-  Serial.print("Civil dusk: ");
-  printTime24h(dusk);
+  printSunTime24h(toLocal(sunset));
 }
 
 void loop() 
 {
 }
 
-void printTime24h(double h) 
+double toLocal(double utc)
+{
+  return utc + time_zone;
+}
+
+void printSunTime24h(double h) 
 {
   int m = int(round(h * 60));
   int hours = (m / 60) % 24;
-  printDigits(hours);
-  Serial.print(":");
   int minutes = m % 60;
+  printDigits(hours);
+  Serial.print(':');
   printDigits(minutes);
   Serial.println();
 }
