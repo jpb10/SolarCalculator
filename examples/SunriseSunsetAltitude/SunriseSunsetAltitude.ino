@@ -1,7 +1,7 @@
 //======================================================================================================================
-// SolarCalculator Library for Arduino example sketch: SunriseSunset.ino
-//  
-// Calculate the times of sunrise, solar noon and sunset for a given date and location.
+// SolarCalculator Library for Arduino example sketch: SunriseSunsetAltitude.ino
+//
+// Calculate the rise and set times at a height above the level of the horizon.
 //
 // Tested with Arduino IDE 1.8.19 and Arduino Uno
 //======================================================================================================================
@@ -18,17 +18,20 @@ void setup()
   int day = 1;
 
   // Location
-  double latitude = 45.55;
-  double longitude = -73.633;
+  double latitude = 45.5034;
+  double longitude = -73.5869;
   int utc_offset = -5;
 
   double transit, sunrise, sunset;
 
-  // Calculate the times of sunrise, transit and sunset, in hours (UTC)
-  calcSunriseSunset(year, month, day, latitude, longitude, transit, sunrise, sunset);
+  // From the Explanatory Supplement to the Astronomical Almanac (1992), p. 484
+  // Sunrise or sunset at a height above the level of the horizon occurs when the Sun's altitude is approximately:
 
-  // Get the approximate times (minimum program size) (iterations = 0)
-  //calcSunriseSunset(year, month, day, latitude, longitude, transit, sunrise, sunset, SUNRISESET_STD_ALTITUDE, 0);
+  int height = 200; // in meters
+  double sun_altitude = SUNRISESET_STD_ALTITUDE - 0.0353 * sqrt(height);
+
+  // Calculate the times of sunrise, transit and sunset, in hours (UTC)
+  calcSunriseSunset(year, month, day, latitude, longitude, transit, sunrise, sunset, sun_altitude);
 
   // Print results
   char str[6];
