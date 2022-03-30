@@ -1,6 +1,7 @@
 # Syntax coloring map for SolarCalculator
 
 # Datatypes (KEYWORD1)
+JulianDay	KEYWORD1
 
 # Methods and functions (KEYWORD2)
 wrapTo360	KEYWORD2
@@ -10,7 +11,6 @@ interpolateCoordinates	KEYWORD2
 fractionalDay	KEYWORD2
 calcJulianDay	KEYWORD2
 calcJulianCent	KEYWORD2
-calcJulianCentSplit	KEYWORD2
 calcGeomMeanLongSun	KEYWORD2
 calcGeomMeanAnomalySun	KEYWORD2
 calcEccentricityEarthOrbit	KEYWORD2
@@ -18,35 +18,27 @@ calcSunEqOfCenter	KEYWORD2
 calcSunTrueLong	KEYWORD2
 calcSunTrueAnomaly	KEYWORD2
 calcSunRadVector	KEYWORD2
-calcSunApparentLong	KEYWORD2
 calcMeanObliquityOfEcliptic	KEYWORD2
-calcNutationLongitude	KEYWORD2
-calcNutationObliquity	KEYWORD2
-calcObliquityCorrection	KEYWORD2
-calcObliquityCorrection2	KEYWORD2
-calcSunRtAscension	KEYWORD2
-calcSunDeclination	KEYWORD2
-calcNutationRtAscension	KEYWORD2
+calcSolarCoordinates	KEYWORD2
 calcGrMeanSiderealTime	KEYWORD2
-calcGrApparentSiderealTime	KEYWORD2
-calcGrSiderealTimeInstant	KEYWORD2
-calcSunAzimuth	KEYWORD2
-calcSunElevation	KEYWORD2
+calcAzimuth	KEYWORD2
+calcElevation	KEYWORD2
 calcRefraction	KEYWORD2
 equationOfTimeSmart	KEYWORD2
-equationOfTimeHughes	KEYWORD2
-equationOfTimeMeeus	KEYWORD2
 calcDeltaT	KEYWORD2
-calcDeltaTPoly	KEYWORD2
 calcEquationOfTime	KEYWORD2
 calcEquatorialCoordinates	KEYWORD2
 calcHorizontalCoordinates	KEYWORD2
-calcSunRadiusVector	KEYWORD2
 calcSunriseSunset	KEYWORD2
 calcCivilDawnDusk	KEYWORD2
 calcNauticalDawnDusk	KEYWORD2
 calcAstronomicalDawnDusk	KEYWORD2
 
 # Instances (KEYWORD2)
+solarcalculator	KEYWORD2
 
 # Constants (LITERAL1)
+SUNRISESET_STD_ALTITUDE	LITERAL1
+CIVIL_DAWNDUSK_STD_ALTITUDE	LITERAL1
+NAUTICAL_DAWNDUSK_STD_ALTITUDE	LITERAL1
+ASTRONOMICAL_DAWNDUSK_STD_ALTITUDE	LITERAL1
