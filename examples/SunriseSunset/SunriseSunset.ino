@@ -1,7 +1,7 @@
 //======================================================================================================================
 // SolarCalculator Library for Arduino example sketch: SunriseSunset.ino
 //  
-// Calculate the times of sunrise, solar noon and sunset for a given date and location.
+// Calculate the times of sunrise, solar noon, and sunset for a given date and location.
 //
 // Tested with Arduino IDE 1.8.19 and Arduino Uno
 //======================================================================================================================
@@ -24,7 +24,7 @@ void setup()
 
   double transit, sunrise, sunset;
 
-  // Calculate the times of sunrise, transit and sunset, in hours (UTC)
+  // Calculate the times of sunrise, transit, and sunset, in hours (UTC)
   calcSunriseSunset(year, month, day, latitude, longitude, transit, sunrise, sunset);
 
   // Get the approximate times (minimum program size) (iterations = 0)

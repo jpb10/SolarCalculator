@@ -1,7 +1,7 @@
 //======================================================================================================================
 // SolarCalculator Library for Arduino example sketch: SolarTrackingTimeLib.ino
 //
-// Monitor the Sun's position in the sky for any location on Earth, corrected for atmospheric refraction.
+// Monitor the Sun's position in the sky for any location on Earth.
 //
 // Tested with Arduino IDE 1.8.19 and Arduino Uno
 //======================================================================================================================
@@ -48,13 +48,13 @@ void loop()
     Serial.print(el);
     Serial.println(F("°"));
 
-    next_millis = millis() + interval * 1000;
+    next_millis = millis() + interval * 1000L;
   }
 }
 
 time_t toUtc(time_t local)
 {
-  return local - long(utc_offset * 3600);
+  return local - utc_offset * 3600L;
 }
 
 // Code from JChristensen/Timezone Clock example

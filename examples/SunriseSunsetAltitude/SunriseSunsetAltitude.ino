@@ -27,10 +27,10 @@ void setup()
   // From the Explanatory Supplement to the Astronomical Almanac (1992), p. 484
   // Sunrise or sunset at a height above the level of the horizon occurs when the Sun's altitude is approximately:
 
-  int height = 200; // in meters
+  int height = 200;  // in meters
   double sun_altitude = SUNRISESET_STD_ALTITUDE - 0.0353 * sqrt(height);
 
-  // Calculate the times of sunrise, transit and sunset, in hours (UTC)
+  // Calculate the times of sunrise, transit, and sunset, in hours (UTC)
   calcSunriseSunset(year, month, day, latitude, longitude, transit, sunrise, sunset, sun_altitude);
 
   // Print results

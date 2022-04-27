@@ -20,14 +20,11 @@ void setup()
   for (int i = 0; i < 365; i++)
   {
     // Calculate the equation of time
-    double t = calcJulianCent(jd);
+    double t = calcJulianCent(jd + i);
     double eq = 4 * equationOfTimeSmart(t);  // convert degrees to minutes of time
 
     // View with serial plotter (Ctrl+Shift+L)
     Serial.println(eq);
-
-    // Next Julian day
-    ++jd;
   }
 }
 

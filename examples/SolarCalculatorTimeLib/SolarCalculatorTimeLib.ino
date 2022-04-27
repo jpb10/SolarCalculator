@@ -1,7 +1,7 @@
 //======================================================================================================================
 // SolarCalculator Library for Arduino example sketch: SolarCalculatorTimeLib.ino
 //
-// Calculate the rise and set times, the equation of time and current solar coordinates.
+// Calculate the rise and set times, the equation of time, and current solar coordinates.
 //
 // Tested with Arduino IDE 1.8.19 and Arduino Uno
 //======================================================================================================================
@@ -68,7 +68,7 @@ void loop()
 
 time_t toUtc(time_t local)
 {
-  return local - long(utc_offset * 3600);
+  return local - utc_offset * 3600L;
 }
 
 double degreesToHours(double deg)
