@@ -29,12 +29,14 @@ calcDeltaT	KEYWORD2
 calcEquationOfTime	KEYWORD2
 calcEquatorialCoordinates	KEYWORD2
 calcHorizontalCoordinates	KEYWORD2
+sunriseEquation	KEYWORD2
 calcSunriseSunset	KEYWORD2
 calcCivilDawnDusk	KEYWORD2
 calcNauticalDawnDusk	KEYWORD2
 calcAstronomicalDawnDusk	KEYWORD2
 
 # Instances (KEYWORD2)
+SolarCalculator	KEYWORD2
 solarcalculator	KEYWORD2
 
 # Constants (LITERAL1)
