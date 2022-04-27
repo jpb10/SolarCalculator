@@ -2,15 +2,15 @@
 
 SolarCalculator is inspired by the [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/). 
 
-This library provides functions to calculate the times of sunrise, sunset, solar noon and twilight (dawn and dusk), 
+This library provides functions to calculate the times of sunrise, sunset, solar noon, and twilight (dawn and dusk), 
 solar coordinates, interpolation of coordinates, atmospheric refraction correction, equation of time, delta T, etc.
 
 Most formulae are taken from Astronomical Algorithms by Jean Meeus and adapted for 8-bit AVR platform.
 
-### Version 2.0.0
+### Version 2.0.x
 
-- Unix time input support
-- Optimizations
+* Unix time input support
+* Optimizations
 
 
 ## Installation
@@ -22,18 +22,18 @@ Download and copy SolarCalculator to your local Arduino/libraries directory.
 Date and time inputs are assumed to be in **Universal Coordinated Time** (UTC).
 
 Although not required, it is recommended to use SolarCalculator along with the 
-[Time](https://github.com/PaulStoffregen/Time) library (or similar).
+[Time](https://github.com/PaulStoffregen/Time) library, or similar.
 
 
 ## Usage
 
 Include SolarCalculator.h in your sketch:
-```
+```c++
 #include <SolarCalculator.h>
 ```
 
-Calculate the times of sunrise, transit (solar noon) and sunset, in hours:
-```
+Calculate the times of sunrise, transit (solar noon), and sunset, in hours:
+```c++
 double latitude = 45.55;     // Observer's latitude 
 double longitude = -73.633;  // Observer's longitude
 int time_zone = -5;          // UTC offset
@@ -45,37 +45,37 @@ double transit, sunrise, sunset;
 calcSunriseSunset(year, month, day, latitude, longitude, transit, sunrise, sunset);
 ```
 
-Or, using the Time library:
-```
+Or, using the Time library (Unix time):
+```c++
 time_t utc = now();
 calcSunriseSunset(utc, latitude, longitude, transit, sunrise, sunset);
 ```
 
 Convert to local standard time:
-```
+```c++
 double sunrise_local = sunrise + time_zone;
 ```
 * Refer to the example sketches for more on rounding and printing the results.
 
-Similarly, calculate the times of civil, nautical, astronomical dawn and dusk, in hours:
-```
+Similarly, calculate the times of dawn and dusk, in hours:
+```c++
 calcCivilDawnDusk(utc, latitude, longitude, transit, c_dawn, c_dusk);
 calcNauticalDawnDusk(utc, latitude, longitude, transit, n_dawn, n_dusk);
 calcAstronomicalDawnDusk(utc, latitude, longitude, transit, a_dawn, a_dusk);
 ```
 
-Calculate the Sun's equatorial coordinates (right ascension, declination and radius vector), in degrees and AUs:
-```
+Calculate the Sun's equatorial coordinates, in degrees and AUs:
+```c++
 calcEquatorialCoordinates(utc, rt_ascension, declination, radius_vector);
 ```
 
-Calculate the Sun's horizontal coordinates (azimuth and elevation), in degrees:
-```
+Calculate the Sun's horizontal coordinates, in degrees:
+```c++
 calcHorizontalCoordinates(utc, latitude, longitude, azimuth, elevation);
 ```
 
-Calculate the equation of time, in minutes of times:
-```
+Calculate the equation of time, in minutes of time:
+```c++
 calcEquationOfTime(utc, eq);
 ```
 where the results are passed by reference.
@@ -85,13 +85,13 @@ where the results are passed by reference.
 
 The following example sketches are included in this library:
 
-* `SunriseSunset`: Calculate the times of sunrise, solar noon and sunset for a given date and location.
+* `SunriseSunset`: Calculate the times of sunrise, solar noon, and sunset for a given date and location.
 
 * `SunriseSunsetAltitude`: Calculate the rise and set times at a height above the level of the horizon.
 
-* `SolarCalculatorTimeLib`: Calculate the rise and set times, the equation of time and current solar coordinates.
+* `SolarCalculatorTimeLib`: Calculate the rise and set times, the equation of time, and current solar coordinates.
 
-* `SolarTrackingTimeLib`: Monitor the Sun's position in the sky, corrected for atmospheric refraction.
+* `SolarTrackingTimeLib`: Monitor the Sun's position in the sky for any location on Earth.
 
 * `EquationOfTime`: Plot the equation of time for a given year.
 
