@@ -1,7 +1,7 @@
 //======================================================================================================================
 // SolarCalculator Library for Arduino example sketch: SolarCalculatorTimeLib.ino
 //
-// Calculate the rise and set times, the equation of time, and current solar coordinates.
+// Calculate the rise and set times, equation of time, and current solar coordinates.
 //
 // Tested with Arduino IDE 1.8.19 and Arduino Uno
 //======================================================================================================================
@@ -10,15 +10,15 @@
 #include <TimeLib.h>
 
 // Location
-const double latitude = 45.55;
-const double longitude = -73.633;
+double latitude = 45.55;
+double longitude = -73.633;
 int utc_offset = -5;
 
 void setup()
 {
   Serial.begin(9600);
 
-  double transit, sunrise, sunset;  // Times, in hours (UTC)
+  double transit, sunrise, sunset;  // Event times, in hours (UTC)
   double eq;                        // Equation of time, in minutes
   double ra, dec, r;                // Equatorial coordinates, in degrees and AUs
   double az, el;                    // Horizontal coordinates, in degrees
@@ -32,7 +32,6 @@ void setup()
   // Get current time
   time_t utc = now();
 
-  // Solar calculations
   calcEquationOfTime(utc, eq);
   calcEquatorialCoordinates(utc, ra, dec, r);
   calcHorizontalCoordinates(utc, latitude, longitude, az, el);
@@ -73,7 +72,7 @@ time_t toUtc(time_t local)
 
 double degreesToHours(double deg)
 {
-  return wrapTo360(deg) / 15;
+  return deg / 15;
 }
 
 // Code from JChristensen/Timezone Clock example

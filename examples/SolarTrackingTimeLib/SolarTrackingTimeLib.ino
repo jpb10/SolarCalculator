@@ -10,8 +10,8 @@
 #include <TimeLib.h>
 
 // Location
-const double latitude = 45.55;
-const double longitude = -73.633;
+double latitude = 45.55;
+double longitude = -73.633;
 int utc_offset = -5;
 
 // Refresh interval, in seconds

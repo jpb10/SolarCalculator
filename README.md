@@ -2,15 +2,10 @@
 
 SolarCalculator is inspired by the [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/). 
 
-This library provides functions to calculate the times of sunrise, sunset, solar noon, and twilight (dawn and dusk), 
-solar coordinates, interpolation of coordinates, atmospheric refraction correction, equation of time, delta T, etc.
+This library provides functions to calculate the times of sunrise, sunset, solar noon, twilight (dawn and dusk), Sun's 
+apparent position in the sky, equation of time, etc.
 
-Most formulae are taken from Astronomical Algorithms by Jean Meeus and adapted for 8-bit AVR platform.
-
-### Version 2.0.x
-
-* Unix time input support
-* Optimizations
+Most formulae are taken from Astronomical Algorithms by Jean Meeus and optimized for 8-bit AVR platform.
 
 
 ## Installation
@@ -22,18 +17,18 @@ Download and copy SolarCalculator to your local Arduino/libraries directory.
 Date and time inputs are assumed to be in **Universal Coordinated Time** (UTC).
 
 Although not required, it is recommended to use SolarCalculator along with the 
-[Time](https://github.com/PaulStoffregen/Time) library, or similar.
+[Time](https://github.com/PaulStoffregen/Time) library or similar.
 
 
 ## Usage
 
 Include SolarCalculator.h in your sketch:
-```c++
+```cpp
 #include <SolarCalculator.h>
 ```
 
 Calculate the times of sunrise, transit (solar noon), and sunset, in hours:
-```c++
+```cpp
 double latitude = 45.55;     // Observer's latitude 
 double longitude = -73.633;  // Observer's longitude
 int time_zone = -5;          // UTC offset
@@ -46,36 +41,36 @@ calcSunriseSunset(year, month, day, latitude, longitude, transit, sunrise, sunse
 ```
 
 Or, using the Time library (Unix time):
-```c++
+```cpp
 time_t utc = now();
 calcSunriseSunset(utc, latitude, longitude, transit, sunrise, sunset);
 ```
 
 Convert to local standard time:
-```c++
+```cpp
 double sunrise_local = sunrise + time_zone;
 ```
 * Refer to the example sketches for more on rounding and printing the results.
 
 Similarly, calculate the times of dawn and dusk, in hours:
-```c++
+```cpp
 calcCivilDawnDusk(utc, latitude, longitude, transit, c_dawn, c_dusk);
 calcNauticalDawnDusk(utc, latitude, longitude, transit, n_dawn, n_dusk);
 calcAstronomicalDawnDusk(utc, latitude, longitude, transit, a_dawn, a_dusk);
 ```
 
-Calculate the Sun's equatorial coordinates, in degrees and AUs:
-```c++
+Sun's equatorial coordinates, in degrees and AUs:
+```cpp
 calcEquatorialCoordinates(utc, rt_ascension, declination, radius_vector);
 ```
 
-Calculate the Sun's horizontal coordinates, in degrees:
-```c++
+Sun's horizontal coordinates, corrected for atmospheric refraction, in degrees:
+```cpp
 calcHorizontalCoordinates(utc, latitude, longitude, azimuth, elevation);
 ```
 
-Calculate the equation of time, in minutes of time:
-```c++
+Equation of time, in minutes of time:
+```cpp
 calcEquationOfTime(utc, eq);
 ```
 where the results are passed by reference.
@@ -89,7 +84,7 @@ The following example sketches are included in this library:
 
 * `SunriseSunsetAltitude`: Calculate the rise and set times at a height above the level of the horizon.
 
-* `SolarCalculatorTimeLib`: Calculate the rise and set times, the equation of time, and current solar coordinates.
+* `SolarCalculatorTimeLib`: Calculate the rise and set times, equation of time, and current solar coordinates.
 
 * `SolarTrackingTimeLib`: Monitor the Sun's position in the sky for any location on Earth.
 
@@ -105,10 +100,11 @@ Various things to consider:
 * The amount of atmospheric refraction changes with air temperature, pressure, and the elevation of the observer. 
 Therefore, sunrise and sunset times can only be accurate to the nearest minute (Meeus, 1998).
 
-* Assuming a purely elliptical motion of the Earth, solar coordinates have a "low accuracy" of 0.01° (Meeus, 1998).
+* Assuming a purely elliptical motion of the Earth, solar coordinates have a "low accuracy" of 0.01° (Meeus, 1998). To
+this precision, we ignore nutation, delta T, and higher-order terms in the relevant expressions.
 
 * Arduino's single precision floating numbers have the equivalent of `24 * log10(2)` ≈ 7.22 significant digits. 
-Although this is generally not sufficient for mathematical astronomy (Meeus, 1998), it is enough for our calculations.
+Although this is generally not sufficient for mathematical astronomy (Meeus, 1998), it is good enough for our purposes.
 
 ### Sunrise and sunset
 
@@ -119,5 +115,7 @@ provided at this time.
 
 ## References
 
-Meeus, J. (1998). *Astronomical algorithms* (2nd ed.). Willmann-Bell. <br />
 ESRL Global Monitoring Laboratory (n.d.). *NOAA Solar Calculator*. https://gml.noaa.gov/grad/solcalc/
+
+Meeus, J. (1998). *Astronomical algorithms* (2nd ed.). Willmann-Bell.
+
