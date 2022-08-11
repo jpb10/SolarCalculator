@@ -1,16 +1,18 @@
 //======================================================================================================================
 // SolarCalculator Library for Arduino
 //
-// This library provides functions to calculate the times of sunrise, sunset, solar noon and twilight (dawn and dusk),
-// solar coordinates, interpolation of coordinates, atmospheric refraction correction, equation of time, delta T, etc.
+// This library provides functions to calculate the times of sunrise, sunset, solar noon, twilight (dawn and dusk),
+// Sun's apparent position in the sky, equation of time, etc.
 //
-// Most formulae are taken from Astronomical Algorithms by Jean Meeus and adapted for 8-bit AVR platform.
+// Most formulae are taken from Astronomical Algorithms by Jean Meeus and optimized for 8-bit AVR platform.
 //======================================================================================================================
 
 #ifndef SOLARCALCULATOR_H
 #define SOLARCALCULATOR_H
 
+#ifdef ARDUINO
 #include <Arduino.h>
+#endif
 
 //namespace solarcalculator {
 
@@ -31,40 +33,35 @@ struct JulianDay
 //======================================================================================================================
 // Intermediate calculations
 //
-// Time T is measured in Julian Centuries (36525 ephemeris days from the epoch J2000.0)
+// Time T is measured in Julian centuries (36525 ephemeris days from the epoch J2000.0)
 //======================================================================================================================
 
 // Utilities
 double wrapTo360(double angle);
 double wrapTo180(double angle);
-double between0And1(double n);
 double interpolateCoordinates(double n, double y1, double y2, double y3);
 
-// Julian day and century
+// Julian day
 double fractionalDay(int hour, int minute, int second);
 double calcJulianDay(int year, int month, int day);
-double calcJulianCent(double JD, double m = 0);
+double calcJulianCent(JulianDay jd);
 
 // Solar coordinates
 double calcGeomMeanLongSun(double T);
 double calcGeomMeanAnomalySun(double T);
-double calcEccentricityEarthOrbit(double T);
 double calcSunEqOfCenter(double T);
-double calcSunTrueLong(double T);
-double calcSunTrueAnomaly(double T);
 double calcSunRadVector(double T);
 double calcMeanObliquityOfEcliptic(double T);
 void calcSolarCoordinates(double T, double &ra, double &dec);
 
-// Sidereal time at Greenwich
-double calcGrMeanSiderealTime(double JD, double m = 0);
-
-// Sun's position in the sky, solar time, and ΔT
-double calcAzimuth(double H, double delta, double lat);
-double calcElevation(double H, double delta, double lat);
-double calcRefraction(double elev);
+// Sidereal time at Greenwich, solar time, and ΔT
+double calcGrMeanSiderealTime(JulianDay jd);
 double equationOfTimeSmart(double T);
 double calcDeltaT(double year);
+
+// Sun's position in the sky
+void equatorial2horizontal(double H, double dec, double lat, double &az, double &el);
+double calcRefraction(double elev);
 
 //======================================================================================================================
 // Solar calculator
@@ -72,16 +69,16 @@ double calcDeltaT(double year);
 // All calculations assume time inputs in Coordinated Universal Time (UTC)
 //======================================================================================================================
 
-// Calculate the equation of time, in minutes of time
+// Equation of time, in minutes of time
 void calcEquationOfTime(JulianDay jd, double &E);
 
-// Calculate the Sun's right ascension, declination and radius vector (distance), in degrees and AUs
+// Sun's geocentric (as seen from the center of the Earth) equatorial coordinates, in degrees and AUs
 void calcEquatorialCoordinates(JulianDay jd, double &rt_ascension, double &declination, double &radius_vector);
 
-// Calculate the Sun's azimuth and elevation (altitude), corrected for atmospheric refraction, in degrees
+// Sun's topocentric (as seen from the observer's place on the Earth's surface) horizontal coordinates, in degrees
 void calcHorizontalCoordinates(JulianDay jd, double latitude, double longitude, double &azimuth, double &elevation);
 
-// Calculate the times of sunrise, transit and sunset, in hours
+// Find the times of sunrise, transit, and sunset, in hours
 void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
                        double &transit, double &sunrise, double &sunset,
                        double altitude = SUNRISESET_STD_ALTITUDE, int iterations = 1);
