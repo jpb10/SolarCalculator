@@ -103,7 +103,7 @@ Therefore, sunrise and sunset times can only be accurate to the nearest minute (
 * Assuming a purely elliptical motion of the Earth, solar coordinates have a "low accuracy" of 0.01° (Meeus, 1998). To
 this precision, we ignore nutation, delta T, and higher-order terms in the relevant expressions.
 
-* Arduino's single precision floating numbers have the equivalent of `24 * log10(2)` ≈ 7.22 significant digits. 
+* Arduino's single precision floating numbers have the equivalent of `23 * log10(2)` ≈ 6.92 significant digits. 
 Although this is generally not sufficient for mathematical astronomy (Meeus, 1998), it is good enough for our purposes.
 
 ### Sunrise and sunset
