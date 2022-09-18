@@ -13,8 +13,8 @@
 
 // Location: Customize these location parameters for your location on Earth
 // you can get it from https://gml.noaa.gov/grad/solcalc/
-double latitude = 32.794408; 
-double longitude = -117.24217;
+double latitude = 32.803200; 
+double longitude = -117.13105;
 int utc_offset = -7; // used for correcting UTC to local time for sunrise and sunset display
 //
 // Set your location elevation above sealevel for correction to the horizon
