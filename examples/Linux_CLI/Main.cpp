@@ -3,7 +3,7 @@
 //
 // Calculate the rise and set times at a height above the level of the horizon.
 //
-// Tested with Kubuntu 20.04, compiled using: gcc Main.cpp ../../src/SolarCalculator.cpp -I../../src -o main -lm
+// Tested with Kubuntu 20.04, compiled using: gcc Main.cpp ../../src/SolarCalculator.cpp -I../../src -o calcSolar -lm
 //======================================================================================================================
 
 #include "SolarCalculator.h"
@@ -11,16 +11,17 @@
 #include <time.h>
 #include <stdio.h>
 
+
 // Location: Customize these location parameters for your location on Earth
 // you can get it from https://gml.noaa.gov/grad/solcalc/
-double latitude = 32.803200; 
-double longitude = -117.13105;
-int utc_offset = -7; // used for correcting UTC to local time for sunrise and sunset display
+static double latitude = 32.803200; 
+static double longitude = -117.13105;
+static int utc_offset = -7; // used for correcting UTC to local time for sunrise and sunset display
 //
 // Set your location elevation above sealevel for correction to the horizon
 // From the Explanatory Supplement to the Astronomical Almanac (1992), p. 484
 // Sunrise or sunset at a height above the level of the horizon occurs when the Sun's altitude is approximately:
-int height = 10;  // in meters
+static int height = 10;  // in meters
 
 // Rounded HH:mm format
 char * hoursToString(double h, char *str)
@@ -37,6 +38,12 @@ char * hoursToString(double h, char *str)
   str[5] = '\0';
   return str;
 }
+
+time_t toLocal(time_t utc)
+{
+  return utc + utc_offset * 3600;
+}
+
 
 int main()
 {
