@@ -237,7 +237,7 @@ void calcRiseSetTimes(double (&m)[3], JulianDay jd, double latitude, double long
     double H0 = degrees(acos((sin(radians(h0)) - sin(radians(latitude)) * sin(radians(dec))) /
                         (cos(radians(latitude)) * cos(radians(dec)))));
 
-    m[0] = wrapTo360(ra - longitude - GMST + jd.m * 360) / 360;
+    m[0] = jd.m + wrapTo180(ra - longitude - GMST) / 360;
     m[1] = m[0] - H0 / 360;
     m[2] = m[0] + H0 / 360;
 }
@@ -250,20 +250,20 @@ void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
     m[0] = 0.5 - longitude / 360;
 
     for (int i = 0; i <= iterations; i++)
-    {
-        for (int j = 0; j < 3; j++)
+        for (int event = 0; event < 3; event++)
         {
-            jd.m = m[j];
+            jd.m = m[event];
             calcRiseSetTimes(times, jd, latitude, longitude, altitude);
-            m[j] = times[j];
+            m[event] = times[event];
 
-            if (i == 0)  // first iteration
+            // First iteration, approximate rise and set times
+            if (i == 0)
             {
-                m[1] = times[1]; m[2] = times[2];  // approximate rise and set times
+                m[1] = times[1];
+                m[2] = times[2];
                 break;
             }
         }
-    }
 
     transit = m[0] * 24;
     sunrise = m[1] * 24;
