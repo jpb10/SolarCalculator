@@ -31,7 +31,7 @@ Calculate the times of sunrise, transit (solar noon), and sunset, in hours:
 ```cpp
 double latitude = 45.55;     // Observer's latitude 
 double longitude = -73.633;  // Observer's longitude
-int time_zone = -5;          // UTC offset
+double time_zone = -5;       // UTC offset
 int year = 2022;             // Calendar year (1901-2099)
 int month = 1;               // Calendar month (1-12)
 int day = 1;                 // Calendar day (1-31)
