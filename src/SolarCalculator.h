@@ -4,15 +4,11 @@
 // This library provides functions to calculate the times of sunrise, sunset, solar noon, twilight (dawn and dusk),
 // Sun's apparent position in the sky, equation of time, etc.
 //
-// Most formulae are taken from Astronomical Algorithms by Jean Meeus and optimized for 8-bit AVR platform.
+// Most formulae are taken from Astronomical Algorithms by Jean Meeus and optimized for Arduino.
 //======================================================================================================================
 
 #ifndef SOLARCALCULATOR_H
 #define SOLARCALCULATOR_H
-
-#ifdef ARDUINO
-#include <Arduino.h>
-#endif
 
 //namespace solarcalculator {
 
@@ -39,11 +35,8 @@ struct JulianDay
 // Utilities
 double wrapTo360(double angle);
 double wrapTo180(double angle);
-double interpolateCoordinates(double n, double y1, double y2, double y3);
 
-// Julian day
-double fractionalDay(int hour, int minute, int second);
-double calcJulianDay(int year, int month, int day);
+// Julian centuries
 double calcJulianCent(JulianDay jd);
 
 // Solar coordinates
@@ -54,14 +47,13 @@ double calcSunRadVector(double T);
 double calcMeanObliquityOfEcliptic(double T);
 void calcSolarCoordinates(double T, double &ra, double &dec);
 
-// Sidereal time at Greenwich, solar time, and ΔT
+// Sidereal time at Greenwich
 double calcGrMeanSiderealTime(JulianDay jd);
-double equationOfTimeSmart(double T);
-double calcDeltaT(double year);
 
 // Sun's position in the sky
 void equatorial2horizontal(double H, double dec, double lat, double &az, double &el);
-double calcRefraction(double elev);
+double calcHourAngleRiseSet(double dec, double lat, double h0);
+double calcRefraction(double el);
 
 //======================================================================================================================
 // Solar calculator
