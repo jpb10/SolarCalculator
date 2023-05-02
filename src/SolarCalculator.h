@@ -52,6 +52,7 @@ double calcGrMeanSiderealTime(JulianDay jd);
 
 // Sun's position in the sky
 void equatorial2horizontal(double H, double dec, double lat, double &az, double &el);
+double calcHourAngle(JulianDay jd, double longitude);
 double calcHourAngleRiseSet(double dec, double lat, double h0);
 double calcRefraction(double el);
 

@@ -117,6 +117,16 @@ void equatorial2horizontal(double H, double dec, double lat, double &az, double 
     el = degrees(asin(sin(radians(lat)) * sin(radians(dec)) + cos(radians(lat)) * cos(radians(dec)) * cos(radians(H))));
 }
 
+double calcHourAngle(JulianDay jd, double longitude)
+{
+    double T = calcJulianCent(jd);
+    double GMST = calcGrMeanSiderealTime(jd);
+    double ra, dec;
+    calcSolarCoordinates(T, ra, dec);
+    double H = wrapTo180(GMST + longitude - ra);
+    return H;
+}
+
 // Hour angle at sunrise or sunset, returns NaN if circumpolar
 double calcHourAngleRiseSet(double dec, double lat, double h0)
 {
