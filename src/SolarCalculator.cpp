@@ -117,13 +117,14 @@ void equatorial2horizontal(double H, double dec, double lat, double &az, double 
     el = degrees(asin(sin(radians(lat)) * sin(radians(dec)) + cos(radians(lat)) * cos(radians(dec)) * cos(radians(H))));
 }
 
-double calcHourAngle(JulianDay jd, double longitude)
+double calcHourAngle(JulianDay jd, double longitude, double rt_ascension)
 {
-    double T = calcJulianCent(jd);
-    double GMST = calcGrMeanSiderealTime(jd);
-    double ra, dec;
-    calcSolarCoordinates(T, ra, dec);
-    double H = wrapTo180(GMST + longitude - ra);
+    double LST = calcGrMeanSiderealTime(jd) + longitude;
+    double H = LST - rt_ascension;
+
+    // Ensure the hour angle is within [0, 360)
+    H = wrapTo360(H);
+
     return H;
 }
 
@@ -247,6 +248,20 @@ void calcEquatorialCoordinates(int year, int month, int day, int hour, int minut
 {
     JulianDay jd(year, month, day, hour, minute, second);
     calcEquatorialCoordinates(jd, rt_ascension, declination, radius_vector);
+}
+
+void calcEquatorialAndHourAngle(unsigned long utc, double longitude, double &rt_ascension, double &declination, double &radius_vector, double &hour_angle)
+{
+    JulianDay jd(utc);
+    calcEquatorialCoordinates(jd, rt_ascension, declination, radius_vector);
+    hour_angle = calcHourAngle(jd, longitude, rt_ascension);
+}
+
+void calcEquatorialAndHourAngle(int year, int month, int day, int hour, int minute, int second, double longitude, double &rt_ascension, double &declination, double &radius_vector, double &hour_angle)
+{
+    JulianDay jd(year, month, day, hour, minute, second);
+    calcEquatorialCoordinates(jd, rt_ascension, declination, radius_vector);
+    hour_angle = calcHourAngle(jd, longitude, rt_ascension);
 }
 
 void calcHorizontalCoordinates(unsigned long utc, double latitude, double longitude,
