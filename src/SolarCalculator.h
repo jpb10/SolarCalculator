@@ -52,6 +52,7 @@ double calcGrMeanSiderealTime(JulianDay jd);
 
 // Sun's position in the sky
 void equatorial2horizontal(double H, double dec, double lat, double &az, double &el);
+double calcHourAngle(JulianDay jd, double longitude, double rt_ascension);
 double calcHourAngleRiseSet(double dec, double lat, double h0);
 double calcRefraction(double el);
 
@@ -87,6 +88,10 @@ void calcEquationOfTime(int year, int month, int day, int hour, int minute, int 
 void calcEquatorialCoordinates(unsigned long utc, double &rt_ascension, double &declination, double &radius_vector);
 void calcEquatorialCoordinates(int year, int month, int day, int hour, int minute, int second,
                                double &rt_ascension, double &declination, double &radius_vector);
+
+void calcEquatorialAndHourAngle(unsigned long utc, double longitude, double &rt_ascension, double &declination, double &radius_vector, double &hour_angle);
+void calcEquatorialAndHourAngle(int year, int month, int day, int hour, int minute, int second, double longitude,
+                                double &rt_ascension, double &declination, double &radius_vector, double &hour_angle);
 
 void calcHorizontalCoordinates(unsigned long utc, double latitude, double longitude,
                                double &azimuth, double &elevation);
