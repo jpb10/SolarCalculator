@@ -1,0 +1,25 @@
+{
+    "name": "SolarCalculator",
+    "version": "2.0.1",
+    "description": "A library inspired by the NOAA Solar Calculator.  It provides functions to calculate the times of sunrise, sunset, solar noon, twilight (dawn and dusk), solar coordinates, equation of time, etc.",
+    "keywords": "Other",
+    "headers": "SolarCalculator.h",
+    "repository":
+    {
+	"type": "git",
+	"url": "https://github.com/jpb10/SolarCalculator.git"
+    },
+    "authors":
+    [
+	{
+	    "name": "",
+	    "email": "",
+	    "url": "https://github.com/jpb10/SolarCalculator"
+	}
+    ],
+    "license": "MIT",
+    "homepage": "",
+    "dependencies": {
+    },
+    "platforms": "native"
+}
