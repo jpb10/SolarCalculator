@@ -79,7 +79,7 @@ double calcGeomMeanAnomalySun(double T)
 double calcSunEqOfCenter(double T)
 {
     double M = calcGeomMeanAnomalySun(T);
-    return sin(radians(M)) * 1.914602 + sin(2 * radians(M)) * 0.019993;  // in degrees
+    return sin(radians(M)) * (1.914602 - 0.004817 * T) + sin(2 * radians(M)) * 0.019993;  // in degrees
 }
 
 double calcSunRadVector(double T)
@@ -113,8 +113,12 @@ double calcGrMeanSiderealTime(JulianDay jd)
 
 void equatorial2horizontal(double H, double dec, double lat, double& az, double& el)
 {
-    az = degrees(atan2(sin(radians(H)), cos(radians(H)) * sin(radians(lat)) - tan(radians(dec)) * cos(radians(lat))));
-    el = degrees(asin(sin(radians(lat)) * sin(radians(dec)) + cos(radians(lat)) * cos(radians(dec)) * cos(radians(H))));
+    double xhor = cos(radians(H)) * cos(radians(dec)) * sin(radians(lat)) - sin(radians(dec)) * cos(radians(lat));
+    double yhor = sin(radians(H)) * cos(radians(dec));
+    double zhor = cos(radians(H)) * cos(radians(dec)) * cos(radians(lat)) + sin(radians(dec)) * sin(radians(lat));
+
+    az = degrees(atan2(yhor, xhor));
+    el = degrees(atan2(zhor, sqrt(xhor * xhor + yhor * yhor)));
 }
 
 // Hour angle at sunrise or sunset, returns NaN if circumpolar
