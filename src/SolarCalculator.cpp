@@ -10,7 +10,7 @@
 #ifdef ARDUINO
 #include <Arduino.h>
 #else
-#include <cmath>
+#include <math.h>
 #endif
 
 #include "SolarCalculator.h"
@@ -94,7 +94,7 @@ double calcMeanObliquityOfEcliptic(double T)
 }
 
 // Mean geocentric equatorial coordinates, accurate to ~0.01 degree
-void calcSolarCoordinates(double T, double &ra, double &dec)
+void calcSolarCoordinates(double T, double& ra, double& dec)
 {
     double L0 = calcGeomMeanLongSun(T);
     double C = calcSunEqOfCenter(T);
@@ -111,7 +111,7 @@ double calcGrMeanSiderealTime(JulianDay jd)
     return wrapTo360(GMST0 + 360.985647 * jd.m);  // in degrees
 }
 
-void equatorial2horizontal(double H, double dec, double lat, double &az, double &el)
+void equatorial2horizontal(double H, double dec, double lat, double& az, double& el)
 {
     az = degrees(atan2(sin(radians(H)), cos(radians(H)) * sin(radians(lat)) - tan(radians(dec)) * cos(radians(lat))));
     el = degrees(asin(sin(radians(lat)) * sin(radians(dec)) + cos(radians(lat)) * cos(radians(dec)) * cos(radians(H))));
@@ -140,7 +140,7 @@ double calcRefraction(double el)
 //======================================================================================================================
 
 // Equation of time, in minutes of time
-void calcEquationOfTime(JulianDay jd, double &E)
+void calcEquationOfTime(JulianDay jd, double& E)
 {
     double T = calcJulianCent(jd);
     double L0 = calcGeomMeanLongSun(T);
@@ -152,7 +152,7 @@ void calcEquationOfTime(JulianDay jd, double &E)
 }
 
 // Sun's geocentric (as seen from the center of the Earth) equatorial coordinates, in degrees and AUs
-void calcEquatorialCoordinates(JulianDay jd, double &rt_ascension, double &declination, double &radius_vector)
+void calcEquatorialCoordinates(JulianDay jd, double& rt_ascension, double& declination, double& radius_vector)
 {
     double T = calcJulianCent(jd);
     calcSolarCoordinates(T, rt_ascension, declination);
@@ -162,7 +162,7 @@ void calcEquatorialCoordinates(JulianDay jd, double &rt_ascension, double &decli
 }
 
 // Sun's topocentric (as seen from the observer's place on the Earth's surface) horizontal coordinates, in degrees
-void calcHorizontalCoordinates(JulianDay jd, double latitude, double longitude, double &azimuth, double &elevation)
+void calcHorizontalCoordinates(JulianDay jd, double latitude, double longitude, double& azimuth, double& elevation)
 {
     double T = calcJulianCent(jd);
     double GMST = calcGrMeanSiderealTime(jd);
@@ -179,13 +179,13 @@ void calcHorizontalCoordinates(JulianDay jd, double latitude, double longitude, 
 
 // Find the times of sunrise, transit, and sunset, in hours
 void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset, double altitude, int iterations)
+                       double& transit, double& sunrise, double& sunset, double altitude, int iterations)
 {
     double m[3];
     m[0] = 0.5 - longitude / 360;
 
-    for (int i = 0; i <= iterations; i++)
-        for (int event = 0; event < 3; event++)
+    for (int i = 0; i <= iterations; ++i)
+        for (int event = 0; event < 3; ++event)
         {
             jd.m = m[event];
             double T = calcJulianCent(jd);
@@ -214,91 +214,91 @@ void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
 // All calculations assume time inputs in Coordinated Universal Time (UTC)
 //======================================================================================================================
 
-void calcEquationOfTime(unsigned long utc, double &E)
+void calcEquationOfTime(unsigned long utc, double& E)
 {
     JulianDay jd(utc);
     calcEquationOfTime(jd, E);
 }
 
-void calcEquationOfTime(int year, int month, int day, int hour, int minute, int second, double &E)
+void calcEquationOfTime(int year, int month, int day, int hour, int minute, int second, double& E)
 {
     JulianDay jd(year, month, day, hour, minute, second);
     calcEquationOfTime(jd, E);
 }
 
-void calcEquatorialCoordinates(unsigned long utc, double &rt_ascension, double &declination, double &radius_vector)
+void calcEquatorialCoordinates(unsigned long utc, double& rt_ascension, double& declination, double& radius_vector)
 {
     JulianDay jd(utc);
     calcEquatorialCoordinates(jd, rt_ascension, declination, radius_vector);
 }
 
 void calcEquatorialCoordinates(int year, int month, int day, int hour, int minute, int second,
-                               double &rt_ascension, double &declination, double &radius_vector)
+                               double& rt_ascension, double& declination, double& radius_vector)
 {
     JulianDay jd(year, month, day, hour, minute, second);
     calcEquatorialCoordinates(jd, rt_ascension, declination, radius_vector);
 }
 
 void calcHorizontalCoordinates(unsigned long utc, double latitude, double longitude,
-                               double &azimuth, double &elevation)
+                               double& azimuth, double& elevation)
 {
     JulianDay jd(utc);
     calcHorizontalCoordinates(jd, latitude, longitude, azimuth, elevation);
 }
 
 void calcHorizontalCoordinates(int year, int month, int day, int hour, int minute, int second,
-                               double latitude, double longitude, double &azimuth, double &elevation)
+                               double latitude, double longitude, double& azimuth, double& elevation)
 {
     JulianDay jd(year, month, day, hour, minute, second);
     calcHorizontalCoordinates(jd, latitude, longitude, azimuth, elevation);
 }
 
 void calcSunriseSunset(unsigned long utc, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset, double altitude, int iterations)
+                       double& transit, double& sunrise, double& sunset, double altitude, int iterations)
 {
     JulianDay jd(utc);
     calcSunriseSunset(jd, latitude, longitude, transit, sunrise, sunset, altitude, iterations);
 }
 
 void calcSunriseSunset(int year, int month, int day, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset, double altitude, int iterations)
+                       double& transit, double& sunrise, double& sunset, double altitude, int iterations)
 {
     JulianDay jd(year, month, day);
     calcSunriseSunset(jd, latitude, longitude, transit, sunrise, sunset, altitude, iterations);
 }
 
 void calcCivilDawnDusk(unsigned long utc, double latitude, double longitude,
-                       double &transit, double &dawn, double &dusk)
+                       double& transit, double& dawn, double& dusk)
 {
     calcSunriseSunset(utc, latitude, longitude, transit, dawn, dusk, CIVIL_DAWNDUSK_STD_ALTITUDE);
 }
 
 void calcCivilDawnDusk(int year, int month, int day, double latitude, double longitude,
-                       double &transit, double &dawn, double &dusk)
+                       double& transit, double& dawn, double& dusk)
 {
     calcSunriseSunset(year, month, day, latitude, longitude, transit, dawn, dusk, CIVIL_DAWNDUSK_STD_ALTITUDE);
 }
 
 void calcNauticalDawnDusk(unsigned long utc, double latitude, double longitude,
-                          double &transit, double &dawn, double &dusk)
+                          double& transit, double& dawn, double& dusk)
 {
     calcSunriseSunset(utc, latitude, longitude, transit, dawn, dusk, NAUTICAL_DAWNDUSK_STD_ALTITUDE);
 }
 
 void calcNauticalDawnDusk(int year, int month, int day, double latitude, double longitude,
-                          double &transit, double &dawn, double &dusk)
+                          double& transit, double& dawn, double& dusk)
 {
     calcSunriseSunset(year, month, day, latitude, longitude, transit, dawn, dusk, NAUTICAL_DAWNDUSK_STD_ALTITUDE);
 }
 
 void calcAstronomicalDawnDusk(unsigned long utc, double latitude, double longitude,
-                              double &transit, double &dawn, double &dusk)
+                              double& transit, double& dawn, double& dusk)
 {
     calcSunriseSunset(utc, latitude, longitude, transit, dawn, dusk, ASTRONOMICAL_DAWNDUSK_STD_ALTITUDE);
 }
 
 void calcAstronomicalDawnDusk(int year, int month, int day, double latitude, double longitude,
-                              double &transit, double &dawn, double &dusk)
+                              double& transit, double& dawn, double& dusk)
 {
     calcSunriseSunset(year, month, day, latitude, longitude, transit, dawn, dusk, ASTRONOMICAL_DAWNDUSK_STD_ALTITUDE);
 }
