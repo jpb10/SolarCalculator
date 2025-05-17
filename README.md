@@ -5,7 +5,7 @@ SolarCalculator is inspired by the [NOAA Solar Calculator](https://gml.noaa.gov/
 This library provides functions to calculate the times of sunrise, sunset, solar noon, twilight (dawn and dusk), Sun's 
 apparent position in the sky, equation of time, etc.
 
-Most formulae are taken from Astronomical Algorithms by Jean Meeus and optimized for 8-bit AVR platform.
+Most formulae are taken from Astronomical Algorithms by Jean Meeus and optimized for Arduino.
 
 
 ## Installation
@@ -29,10 +29,10 @@ Include SolarCalculator.h in your sketch:
 
 Calculate the times of sunrise, transit (solar noon), and sunset, in hours:
 ```cpp
-double latitude = 45.55;     // Observer's latitude 
-double longitude = -73.633;  // Observer's longitude
+double latitude = 42.36;     // Observer's latitude 
+double longitude = -71.058;  // Observer's longitude
 int time_zone = -5;          // UTC offset
-int year = 2022;             // Calendar year (1901-2099)
+int year = 2000;             // Calendar year (1901-2099)
 int month = 1;               // Calendar month (1-12)
 int day = 1;                 // Calendar day (1-31)
 
@@ -103,8 +103,14 @@ Therefore, sunrise and sunset times can only be accurate to the nearest minute (
 * Assuming a purely elliptical motion of the Earth, solar coordinates have a "low accuracy" of 0.01° (Meeus, 1998). To
 this precision, we ignore nutation, delta T, and higher-order terms in the relevant expressions.
 
-* Arduino's single precision floating numbers have the equivalent of `23 * log10(2)` ≈ 6.92 significant digits. 
-Although this is generally not sufficient for mathematical astronomy (Meeus, 1998), it is good enough for our purposes.
+
+### `double` vs `float`
+
+Although this library internally uses type `double` instead of `float`, all expressions have been optimized to work with 
+single precision floating-point arithmetic. On Arduino Uno, 
+[avr-libc](https://www.nongnu.org/avr-libc/user-manual/group__avr__math.html) substitutes and carries out the 
+corresponding single precision operations.
+
 
 ### Sunrise and sunset
 
