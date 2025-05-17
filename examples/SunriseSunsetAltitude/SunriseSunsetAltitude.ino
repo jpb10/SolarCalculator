@@ -3,7 +3,7 @@
 //
 // Calculate the rise and set times at a height above the level of the horizon.
 //
-// Tested with Arduino IDE 1.8.19 and Arduino Uno
+// Tested with Arduino IDE 2.3.5 and Arduino Uno
 //======================================================================================================================
 
 #include <SolarCalculator.h>
@@ -13,13 +13,13 @@ void setup()
   Serial.begin(9600);
 
   // Date
-  int year = 2022;
+  int year = 2000;
   int month = 1;
   int day = 1;
 
   // Location
-  double latitude = 45.5034;
-  double longitude = -73.5869;
+  double latitude = 42.2136;
+  double longitude = -71.1125;
   int utc_offset = -5;
 
   double transit, sunrise, sunset;
@@ -45,7 +45,7 @@ void loop()
 }
 
 // Rounded HH:mm format
-char * hoursToString(double h, char *str)
+char* hoursToString(double h, char* str)
 {
   int m = int(round(h * 60));
   int hr = (m / 60) % 24;

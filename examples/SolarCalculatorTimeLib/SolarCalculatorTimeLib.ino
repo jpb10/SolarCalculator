@@ -3,15 +3,15 @@
 //
 // Calculate the rise and set times, equation of time, and current solar coordinates.
 //
-// Tested with Arduino IDE 1.8.19 and Arduino Uno
+// Tested with Arduino IDE 2.3.5 and Arduino Uno
 //======================================================================================================================
 
 #include <SolarCalculator.h>
 #include <TimeLib.h>
 
 // Location
-double latitude = 45.55;
-double longitude = -73.633;
+double latitude = 42.36;
+double longitude = -71.058;
 int utc_offset = -5;
 
 void setup()
@@ -24,10 +24,10 @@ void setup()
   double az, el;                    // Horizontal coordinates, in degrees
 
   // Set system time to compile time
-  setTime(toUtc(compileTime()));
+  setTime(compileTime() - utc_offset * 3600L);
 
   // Set time manually (hr, min, sec, day, mo, yr)
-  //setTime(0, 0, 0, 1, 1, 2022);
+  //setTime(0, 0, 0, 1, 1, 2000);
 
   // Get current time
   time_t utc = now();
@@ -48,7 +48,7 @@ void setup()
   Serial.print(eq);
   Serial.println(F(" min"));
   Serial.print(F("RA: "));
-  Serial.print(degreesToHours(ra), 3);
+  Serial.print(ra / 15, 3);
   Serial.print(F("h  Dec: "));
   Serial.print(dec);
   Serial.print(F("°  R: "));
@@ -65,20 +65,10 @@ void loop()
 {
 }
 
-time_t toUtc(time_t local)
-{
-  return local - utc_offset * 3600L;
-}
-
-double degreesToHours(double deg)
-{
-  return deg / 15;
-}
-
 // Code from JChristensen/Timezone Clock example
 time_t compileTime()
 {
-  const uint8_t COMPILE_TIME_DELAY = 8;
+  const uint8_t COMPILE_TIME_DELAY = 6;
   const char *compDate = __DATE__, *compTime = __TIME__, *months = "JanFebMarAprMayJunJulAugSepOctNovDec";
   char chMon[4], *m;
   tmElements_t tm;

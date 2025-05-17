@@ -3,7 +3,7 @@
 //  
 // Calculate the times of sunrise, solar noon, and sunset for a given date and location.
 //
-// Tested with Arduino IDE 1.8.19 and Arduino Uno
+// Tested with Arduino IDE 2.3.5 and Arduino Uno
 //======================================================================================================================
 
 #include <SolarCalculator.h>
@@ -13,13 +13,13 @@ void setup()
   Serial.begin(9600);
 
   // Date
-  int year = 2022;
+  int year = 2000;
   int month = 1;
   int day = 1;
 
   // Location
-  double latitude = 45.55;
-  double longitude = -73.633;
+  double latitude = 42.36;
+  double longitude = -71.058;
   int utc_offset = -5;
 
   double transit, sunrise, sunset;
@@ -42,7 +42,7 @@ void loop()
 }
 
 // Rounded HH:mm format
-char * hoursToString(double h, char *str)
+char* hoursToString(double h, char* str)
 {
   int m = int(round(h * 60));
   int hr = (m / 60) % 24;
